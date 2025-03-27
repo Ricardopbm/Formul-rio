@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Formulário</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            width: 1600px;
+            margin: 20px auto;
+            flex-grow: 1;
+        }
+        .controls {
+            width: 800px;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+        .preview {
+            width: 800px;
+            padding: 20px;
+        }
+        .form-field {
+            margin-bottom: 15px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Editor de Formulários Online</h1>
+    </header>
+    
+    <div class="container">
+        <div class="controls">
+            <h2>Controles do Editor</h2>
+            
+            <div class="form-field">
+                <label for="formTitle">Título do Formulário:</label>
+                <input type="text" id="formTitle" class="form-control" value="Formulário Gerado">
+            </div>
+            
+            <div class="form-field">
+                <label for="formBackgroundColor">Cor de Fundo do Formulário:</label>
+                <input type="color" id="formBackgroundColor" class="form-control form-control-color" value="#f0f0f0">
+            </div>
+            
+            <div class="form-field">
+                <label for="formBorderColor">Cor da Borda do Formulário:</label>
+                <input type="color" id="formBorderColor" class="form-control form-control-color" value="#cccccc">
+            </div>
+
+            <div class="form-field">
+                <label for="formTextColor">Cor da Fonte do Formulário:</label>
+                <input type="color" id="formTextColor" class="form-control form-control-color" value="#000000">
+            </div>
+
+            <div class="form-field">
+                <label for="formFontFamily">Fonte do Formulário:</label>
+                <select id="formFontFamily" class="form-control">
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="fieldType">Tipo de Campo:</label>
+                <select id="fieldType" class="form-control">
+                    <option value="text">Texto</option>
+                    <option value="email">E-mail</option>
+                    <option value="radio">Múltipla Escolha</option>
+                    <option value="date">Data</option>
+                </select>
+            </div>
+            
+            <div class="form-field">
+                <label for="fieldLabel">Nome do Campo:</label>
+                <input type="text" id="fieldLabel" class="form-control">
+            </div>
+            
+            <div id="radioOptionsSection" style="display: none;">
+                <div class="form-field">
+                    <label>Opções de Múltipla Escolha:</label>
+                    <div id="radioOptions">
+                        <input type="text" class="form-control radio-option" placeholder="Opção 1">
+                        <input type="text" class="form-control radio-option" placeholder="Opção 2">
+                    </div>
+                </div>
+            </div>
+            
+            <button id="addField" class="btn btn-primary">Adicionar Campo</button>
+        </div>
+        
+        <div class="preview">
+            <h2>Visualização do Formulário</h2>
+            <form id="generatedForm" style="padding: 20px; border: 1px solid #ccc; background-color: #f0f0f0; color: #000; font-family: Arial;">
+                <h3 id="previewTitle">Formulário Gerado</h3>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Editor de Formulários. Todos os direitos reservados.</p>
+    </footer>
+    
+    <script>
+        const formTitle = document.getElementById('formTitle');
+        const formBackgroundColor = document.getElementById('formBackgroundColor');
+        const formBorderColor = document.getElementById('formBorderColor');
+        const formTextColor = document.getElementById('formTextColor');
+        const formFontFamily = document.getElementById('formFontFamily');
+        const fieldType = document.getElementById('fieldType');
+        const fieldLabel = document.getElementById('fieldLabel');
+        const addFieldButton = document.getElementById('addField');
+        const generatedForm = document.getElementById('generatedForm');
+        const radioOptionsSection = document.getElementById('radioOptionsSection');
+        const radioOptions = document.getElementById('radioOptions');
+        const previewTitle = document.getElementById('previewTitle');
+        
+        generatedForm.style.backgroundColor = formBackgroundColor.value;
+        generatedForm.style.borderColor = formBorderColor.value;
+        generatedForm.style.color = formTextColor.value;
+        generatedForm.style.fontFamily = formFontFamily.value;
+        previewTitle.textContent = formTitle.value;
+        
+        formTitle.addEventListener('input', () => {
+            previewTitle.textContent = formTitle.value;
+        });
+        
+        formBackgroundColor.addEventListener('input', () => {
+            generatedForm.style.backgroundColor = formBackgroundColor.value;
+        });
+        
+        formBorderColor.addEventListener('input', () => {
+            generatedForm.style.borderColor = formBorderColor.value;
+        });
+
+        formTextColor.addEventListener('input', () => {
+            generatedForm.style.color = formTextColor.value;
+        });
+
+        formFontFamily.addEventListener('change', () => {
+            generatedForm.style.fontFamily = formFontFamily.value;
+        });
+        
+        fieldType.addEventListener('change', () => {
+            radioOptionsSection.style.display = fieldType.value === 'radio' ? 'block' : 'none';
+        });
+        
+        addFieldButton.addEventListener('click', () => {
+            const type = fieldType.value;
+            const labelText = fieldLabel.value.trim();
+            
+            if (!labelText) {
+                alert('Por favor, insira um nome para o campo.');
+                return;
+            }
+            
+            const fieldDiv = document.createElement('div');
+            fieldDiv.classList.add('form-field');
+            
+            const label = document.createElement('label');
+            label.textContent = labelText + ':';
+            fieldDiv.appendChild(label);
+            
+            let input;
+            switch (type) {
+                case 'text':
+                case 'email':
+                case 'date':
+                    input = document.createElement('input');
+                    input.type = type;
+                    input.classList.add('form-control');
+                    fieldDiv.appendChild(input);
+                    break;
+                case 'radio':
+                    const radioOptionsInputs = radioOptions.querySelectorAll('.radio-option');
+                    radioOptionsInputs.forEach((option, index) => {
+                        const radioDiv = document.createElement('div');
+                        radioDiv.classList.add('form-check');
+                        
+                        const radio = document.createElement('input');
+                        radio.type = 'radio';
+                        radio.name = labelText.replace(/\s+/g, '_').toLowerCase();
+                        radio.id = `${labelText}_${index + 1}`;
+                        radio.classList.add('form-check-input');
+                        
+                        const radioLabel = document.createElement('label');
+                        radioLabel.classList.add('form-check-label');
+                        radioLabel.htmlFor = radio.id;
+                        radioLabel.textContent = option.value;
+                        
+                        radioDiv.appendChild(radio);
+                        radioDiv.appendChild(radioLabel);
+                        fieldDiv.appendChild(radioDiv);
+                    });
+                    break;
+            }
+            
+            generatedForm.appendChild(fieldDiv);
+            fieldLabel.value = '';
+            if (type === 'radio') {
+                radioOptions.querySelectorAll('.radio-option').forEach(input => input.value = '');
+            }
+        });
+    </script>
+</body>
+</html>
